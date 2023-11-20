@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.naming.Name;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -115,6 +116,51 @@ class StudentRepositoryTest {
         System.out.println("\n\n\n");
     }
 
+    @Test
+    @DisplayName("testFindCityWithJPQL")
+    void testFindCityWithJPQL() {
+        //given
+        String city = "서울시";
 
+        //when
+        List<Student> list = studentRepository.getByCityWithJPQL(city);
+
+        //then
+        assertEquals("춘식이", list.get(0).getName());
+        System.out.println("\n\n\n");
+        System.out.println("student = " + list.get(0));
+        System.out.println("\n\n\n");
+    }
+
+    @Test
+    @DisplayName("testSearchNameJPQL")
+    void testSearchNameJPQL() {
+        //given
+        String name = "이";
+
+        //when
+        List<Student> list = studentRepository.searchByNameWithJPQL(name);
+
+        //then
+        assertEquals(3, list.size());
+        System.out.println("\n\n\n");
+        list.forEach(System.out::println);
+        System.out.println("\n\n\n");
+    }
+
+    @Test
+    @DisplayName("JPQL로 삭제하기")
+    void testDeleteByJPQL() {
+        //given
+        String name = "대길이";
+        //when
+        studentRepository.deleteByNameWithJPQL(name);
+
+        //then
+        List<Student> students = studentRepository.findByName(name);
+
+        assertEquals(0, students.size());
+
+    }
 
 }
