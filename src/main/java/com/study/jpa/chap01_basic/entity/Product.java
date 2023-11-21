@@ -18,6 +18,7 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY ) // id라는 컬럼을 발동 시킬 때의 전략 설정 (mysql엔 시퀀스 없음)
     @Column(name = "prod_id") // 필드명과 컬럼명을 다르게 하고 싶을 경우
     private long id;
+
     @Column(name = "prod_name", nullable = false, length = 30)
     private String name;
 
