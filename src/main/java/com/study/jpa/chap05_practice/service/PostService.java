@@ -131,4 +131,10 @@ public class PostService {
         Post modifiedPost = postRepository.save(postEntity);
         return new PostDetailResponseDTO(modifiedPost);
     }
+
+    public void delete(Long id) throws Exception{
+
+        postRepository.deleteById(id);
+        // 얘도 null 이 오면 예외를 던진대,,, 그래서 이 친구 예외를 던져버릴거야
+    }
 }

@@ -20,3 +20,8 @@ spring:
 
 logging.level:
   org.hibernate.SQL: debug
+
+# swagger setting
+springdoc:
+  swagger-ui:
+    path: /myapi.html # 해당 문서의 주소를 입력하는 공간 (지금 여기는 쌤 맘대로 작성함. 즉, 어떤 url 요청에 얠 보여줄거니?)

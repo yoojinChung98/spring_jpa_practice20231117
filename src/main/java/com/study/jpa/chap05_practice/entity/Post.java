@@ -42,7 +42,7 @@ public class Post {
 
 
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post", orphanRemoval = true) // 고아객체는 삭제되어도 ㄱㅊ하다는 옵션.
     @Builder.Default // 특정 필드를 직접 지정한 값으로 초기화 하는 것을 강제. (빌더 사용 시!)
     private List<HashTag> hashTags = new ArrayList<>();
 

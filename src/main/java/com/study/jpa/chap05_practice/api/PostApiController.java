@@ -2,6 +2,10 @@ package com.study.jpa.chap05_practice.api;
 
 import com.study.jpa.chap05_practice.dto.*;
 import com.study.jpa.chap05_practice.service.PostService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,8 +18,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
+@Tag(name = "post API", description = "게시물 조회, 등록 및 수정, 삭제 api 입니다.") // 스웨거에서 쓰려고 작성한 아노테이션인가?
 @RestController
 @Slf4j
 @RequiredArgsConstructor
@@ -59,7 +65,14 @@ public class PostApiController {
         }
     }
 
-    @PostMapping()
+    @Operation(summary = "게시물 작성", description = "게시물 작성을 담당하는 메서드 입니다.") // 스웨거에서 쓰려는 아노테이션 (서머리: 요약, 디스크립션: 상세설명)_
+    @Parameters({ // 각각의 파라미터를 설명하는거라고 생각하면 됨
+            @Parameter(name = "writer", description = "게시물의 작성자 이름을 쓰세요!", example = "김뽀삐", required = true), // 파라미터 이름, 설명, 예시, 필수여부
+            @Parameter(name = "title", description = "게시물의 제목을 쓰세요!", example = "글의 제목입니다", required = true), // 파라미터 이름, 설명, 예시, 필수여부
+            @Parameter(name = "content", description = "게시물의 내용을 쓰세요!", example = "글의 내용입니당"), // 파라미터 이름, 설명, 예시, 필수여부
+            @Parameter(name = "hashTags", description = "게시물의 해시태그를 쓰세요!", example = "['하하', '호호']") // 파라미터 이름, 설명, 예시, 필수여부
+    }) //스웨거 파라미터가 하나면 @parameter()
+    @PostMapping
     // ResponseEntity를 ㅣ용하여 다양한 응답상태를 표현할 수 있기 위해 해당 객체를 리턴타입으로 지정함
     public ResponseEntity<?> create(
             @Validated @RequestBody PostCreateDTO dto,
@@ -128,5 +141,26 @@ public class PostApiController {
         }
         return null;
     }
+
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        log.info("api/v1/posts/{} DELETE!!", id);
+
+        try {
+            postService.delete(id);
+            return ResponseEntity.ok("DEL SUCCESS!!"); // 어차피 줄것도 없는데 걍 이렇게 던져버리겠으
+        }
+//        // 그냥 애초에 해시태그가 있는 게시글은 삭제를 못하게 하는 방법
+//        catch (SQLIntegrityConstraintViolationException e) {
+//            return ResponseEntity.internalServerError()
+//                    .body("해시태그가 달린 게시물은 삭제할 수 없습니다.");
+//        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
 
 }
