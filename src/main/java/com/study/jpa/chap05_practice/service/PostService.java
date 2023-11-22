@@ -68,6 +68,13 @@ public class PostService {
         return new PostDetailResponseDTO(postEntity);
     }
 
+    private Post getPost(Long id) {
+        return postRepository.findById(id).orElseThrow(
+                () -> new RuntimeException(id + "번 게시물이 존재하지 않습니다!")
+        );
+    }
+
+
     public PostDetailResponseDTO insert(PostCreateDTO dto)
         throws Exception{ //save()메서드는 null 값이 오면 예외가 발생함 -> 걍 컨트롤러로 던져버리겠음.(컨트롤러 쪽에서 한번에 처리하겠음)
         // PostCreateDTO에 dto를 entity 로 바꾸는 로직을 dto클래스에 생성하겠음
@@ -109,5 +116,19 @@ public class PostService {
 
 
         return new PostDetailResponseDTO(saved);
+    }
+
+    public PostDetailResponseDTO modify(PostModifyDTO dto) {
+
+        // 수정 전 데이터를 조회
+        Post postEntity = getPost(dto.getPostNo());
+
+        // 수정 시작
+        postEntity.setTitle(dto.getTitle());
+        postEntity.setContent(dto.getContent());
+
+        // 수정 완료
+        Post modifiedPost = postRepository.save(postEntity);
+        return new PostDetailResponseDTO(modifiedPost);
     }
 }
